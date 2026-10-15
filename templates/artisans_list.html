@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Artisans - Hunar Setu</title>
+    <!-- PWA Integration Code -->
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#f97316">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(reg => console.log('PWA Registered Successfully!'))
+      .catch(err => console.log('PWA Registration Failed:', err));
+  }
+</script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        nav { background-color: #0f172a; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: #f97316; font-size: 24px; font-weight: bold; text-decoration: none; }
+        .nav-links a { color: #f8fafc; text-decoration: none; margin-left: 20px; font-weight: 500; }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .filter-card { background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .filter-form { display: flex; gap: 15px; flex-wrap: wrap; }
+        .filter-form input, .filter-form select { flex: 1; min-width: 200px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+        .btn-search { background-color: #f97316; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-reset { background-color: #e2e8f0; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; }
+        .artisan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .artisan-card { background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .badge { display: inline-block; background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 15px; }
+        .contact-btn { display: block; text-align: center; background-color: #25d366; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">Hunar Setu 🎨</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/artisan">Register Artisan</a>
+            <a href="/artisans">View Artisans</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Our Skilled Artisans 🧑‍🎨</h1>
+
+        <!-- Filter / Search Section -->
+        <div class="filter-card">
+            <form action="/artisans" method="GET" class="filter-form">
+                <input type="text" name="search" placeholder="Search by name or location..." value="{{ request.args.get('search', '') }}">
+                
+                <select name="category">
+                    <option value="">All Categories</option>
+                    <option value="Pottery & Ceramics" {% if request.args.get('category') == 'Pottery & Ceramics' %}selected{% endif %}>Pottery & Ceramics</option>
+                    <option value="Textiles & Embroidery" {% if request.args.get('category') == 'Textiles & Embroidery' %}selected{% endif %}>Textiles & Embroidery</option>
+                    <option value="Woodcraft & Carving" {% if request.args.get('category') == 'Woodcraft & Carving' %}selected{% endif %}>Woodcraft & Carving</option>
+                    <option value="Jewelry & Metalwork" {% if request.args.get('category') == 'Jewelry & Metalwork' %}selected{% endif %}>Jewelry & Metalwork</option>
+                    <option value="Paintings & Folk Art" {% if request.args.get('category') == 'Paintings & Folk Art' %}selected{% endif %}>Paintings & Folk Art</option>
+                    <option value="Leather Craft" {% if request.args.get('category') == 'Leather Craft' %}selected{% endif %}>Leather Craft</option>
+                    <option value="Other" {% if request.args.get('category') == 'Other' %}selected{% endif %}>Other Handicraft</option>
+                </select>
+
+                <button type="submit" class="btn-search">Filter</button>
+                <a href="/artisans" class="btn-reset">Reset</a>
+            </form>
+        </div>
+
+        <!-- Artisans Cards List -->
+        <div class="artisan-grid">
+            {% if artisans %}
+                {% for artisan in artisans %}
+                    <div class="artisan-card">
+                        <h2>{{ artisan.name }}</h2>
+                        <span class="badge">{{ artisan.category }}</span>
+                        
+                        <p style="margin-bottom: 8px;"><strong>📍 Location:</strong> {{ artisan.location }}</p>
+                        <p style="margin-bottom: 8px;"><strong>📞 Phone:</strong> {{ artisan.phone }}</p>
+                        <p style="margin-bottom: 8px;"><strong>📝 About:</strong> {{ artisan.about }}</p>
+
+                        <a href="https://wa.me/91{{ artisan.phone }}" target="_blank" class="contact-btn">
+                            💬 Chat on WhatsApp
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #64748b; grid-column: 1 / -1;">Koi artisan match nahi hua. Reset button dabayein.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

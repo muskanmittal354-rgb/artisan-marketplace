@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hunar Setu</title>
+    <!-- PWA Integration Code -->
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#f97316">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(reg => console.log('PWA Registered Successfully!'))
+      .catch(err => console.log('PWA Registration Failed:', err));
+  }
+</script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>Hunar Setu</h1>
+        <p>Connecting Local Artisans with Customers</p>
+    </header>
+
+    <section class="hero">
+
+        <h2>Discover Handmade Products</h2>
+
+        <p>
+            Support local artisans and explore unique handcrafted products.
+        </p>
+
+        <button onclick="showMessage()">
+            Explore Products
+        </button>
+        <br><br>
+
+<a href="/artisan">
+    <button>
+        Register as Artisan 👩‍🎨
+    </button>
+</a>
+
+    </section>
+
+    <section class="products">
+
+        <div class="card">
+            <h3>Handmade Pottery</h3>
+            <p>
+                Beautiful traditional pottery made by skilled artisans.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Handcrafted Jewellery</h3>
+            <p>
+                Unique jewellery created with traditional techniques.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Handwoven Crafts</h3>
+            <p>
+                Traditional handmade products from local craftsmen.
+            </p>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Hunar Setu</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

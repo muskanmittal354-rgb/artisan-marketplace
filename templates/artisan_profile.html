@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Profile - Hunar Setu</title>
+    <!-- PWA Integration Code -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#f97316">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/sw.js')
+          .then(reg => console.log('PWA Registered Successfully!'))
+          .catch(err => console.log('PWA Registration Failed:', err));
+      }
+    </script>
+
+    <!-- QR Code Library CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        nav { background-color: #0f172a; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: #f97316; font-size: 24px; font-weight: bold; text-decoration: none; }
+        .nav-links a { color: #f8fafc; text-decoration: none; margin-left: 20px; font-weight: 500; }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        
+        /* Profile Layout */
+        .profile-wrapper { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; }
+        @media(max-width: 768px) { .profile-wrapper { grid-template-columns: 1fr; } }
+
+        .profile-card { background: white; border-radius: 12px; padding: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: center; }
+        .profile-header { display: flex; align-items: center; gap: 20px; }
+        .avatar { width: 80px; height: 80px; background: #f97316; color: white; font-size: 36px; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; }
+        .badge { background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        
+        /* QR Code Card */
+        .qr-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        .product-body { padding: 20px; }
+        .product-price { color: #f97316; font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .btn-whatsapp { display: block; width: 100%; background-color: #25d366; color: white; text-align: center; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 15px; }
+        .btn-print { background-color: #0f172a; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-print:hover { background-color: #1e293b; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">Hunar Setu 🎨</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/artisan">Register Artisan</a>
+            <a href="/artisans">View Artisans</a>
+            <a href="/products">Products Marketplace</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Profile & QR Code Section Grid -->
+        <div class="profile-wrapper">
+            <!-- Artisan Info Card -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar">{{ name[0].upper() }}</div>
+                    <div>
+                        <h1>{{ name }}</h1>
+                        {% if artisan %}
+                            <p style="color: #64748b; margin-top: 5px;">📍 Location: <strong>{{ artisan.location }}</strong> | Category: <span class="badge">{{ artisan.category }}</span></p>
+                            <p style="color: #64748b; margin-top: 3px;">📞 Contact: <strong>{{ artisan.phone }}</strong></p>
+                        {% else %}
+                            <p style="color: #64748b; margin-top: 5px;">Artisan Master Craftsman</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digital QR Code Card -->
+            <div class="qr-card">
+                <h3 style="font-size: 15px; color: #0f172a; margin-bottom: 4px; font-weight: bold;">Artisan QR Code 📌</h3>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Scan to visit profile directly</p>
+                <div id="qrcode" style="display: flex; justify-content: center;"></div>
+                <button onclick="window.print()" class="btn-print">Print / Save QR</button>
+            </div>
+        </div>
+
+        <h2>Crafts by {{ name }} 🛍️</h2>
+
+        <!-- Artisan's Products Grid -->
+        <div class="products-grid">
+            {% if products %}
+                {% for product in products %}
+                    <div class="product-card">
+                        <div>
+                            <img src="{{ product.image_url }}" alt="{{ product.title }}" class="product-img">
+                            <div class="product-body">
+                                <h3>{{ product.title }}</h3>
+                                <div class="product-price">₹{{ product.price }}</div>
+                                <p style="font-size: 14px; color: #475569;">{{ product.description }}</p>
+                            </div>
+                        </div>
+                        <div style="padding: 0 20px 20px 20px;">
+                            <a href="https://wa.me/91{{ artisan.phone if artisan else '9999999999' }}?text=Hello!%20I%20want%20to%20buy%20'{{ product.title }}'." target="_blank" class="btn-whatsapp">
+                                💬 Order on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="grid-column: 1/-1; color: #64748b;">Is artisan ne abhi tak koi product list nahi kiya hai.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- QR Code Generation Script -->
+    <script>
+        window.onload = function() {
+            const profileUrl = window.location.href;
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: profileUrl,
+                width: 110,
+                height: 110,
+                colorDark : "#0f172a",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+    </script>
+</body>
+</html>

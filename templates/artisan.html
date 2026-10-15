@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as Artisan - Hunar Setu</title>
+    <!-- PWA Integration Code -->
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#f97316">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(reg => console.log('PWA Registered Successfully!'))
+      .catch(err => console.log('PWA Registration Failed:', err));
+  }
+</script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        nav { background-color: #0f172a; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: #f97316; font-size: 24px; font-weight: bold; text-decoration: none; }
+        .nav-links a { color: #f8fafc; text-decoration: none; margin-left: 20px; font-weight: 500; }
+        .form-container { max-width: 600px; margin: 40px auto; background: #ffffff; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
+        .btn-submit { width: 100%; background-color: #f97316; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">Hunar Setu 🎨</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/artisan">Register Artisan</a>
+            <a href="/artisans">View Artisans</a>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Artisan Registration 🧑‍🎨</h2>
+        <p style="color:#64748b; margin-bottom:20px;">Apni details bharein aur Hunar Setu platform se juden.</p>
+
+        <form action="/save-artisan" method="POST">
+            <div class="form-group">
+                <label for="name">Full Name (Pura Naam)</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Ramesh Kumar" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location (City / State)</label>
+                <input type="text" id="location" name="location" placeholder="e.g. Jaipur, Rajasthan" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Artisan Craft Category</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option value="Pottery & Ceramics">Pottery & Ceramics</option>
+                    <option value="Textiles & Embroidery">Textiles & Embroidery</option>
+                    <option value="Woodcraft & Carving">Woodcraft & Carving</option>
+                    <option value="Jewelry & Metalwork">Jewelry & Metalwork</option>
+                    <option value="Paintings & Folk Art">Paintings & Folk Art</option>
+                    <option value="Leather Craft">Leather Craft</option>
+                    <option value="Other">Other Handicraft</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="about">About Your Art / Work</label>
+                <textarea id="about" name="about" rows="4" placeholder="Apne kaam aur experience ke bare mein thoda batayein..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Register Now 🎉</button>
+        </form>
+    </div>
+
+</body>
+</html>
